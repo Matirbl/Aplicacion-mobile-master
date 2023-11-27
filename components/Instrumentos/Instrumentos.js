@@ -108,12 +108,12 @@ import {
 import { Styles } from "./Styles";
 import React, { useState, useEffect } from "react";
 import Header from "../Header/Header";
-import { db, storage } from "../../src/config/firebase";
 import firebase from "../../src/config/firebase";
-import { querySnapshot, addDoc, collection } from "firebase/firestore";
 
 const instrumentsList = () => {
   const [instruments, setInstruments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMoreLoading, setIsMoreLoading] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -131,6 +131,31 @@ const instrumentsList = () => {
     return unsubscribe;
   }, []);
 
+  const renderFooter = () => {
+    if (!isMoreLoading) return true;
+    return (
+      <ActivityIndicator
+        size="large"
+        color="orange"
+        style={Styles.ActivityIndicator}
+      />
+    );
+  };
+
+  const onRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  };
+
+  const getMore = () => {
+    setIsMoreLoading(true);
+    setTimeout(() => {
+      setIsMoreLoading(false);
+    }, 2000);
+  };
+
   return (
     <View style={Styles.TopView}>
       <FlatList
@@ -138,8 +163,7 @@ const instrumentsList = () => {
         numColumns={2}
         ListHeaderComponent={Header}
         data={instruments}
-        onEndReachedThreshold={0.5}
-        initialNumToRender={3}
+        //creamos cada card
         renderItem={({ item }) => (
           <Pressable style={{ margin: 20 }}>
             <Image style={Styles.Image} source={{ uri: item.imagen }} />
@@ -161,6 +185,21 @@ const instrumentsList = () => {
             </Pressable>
           </Pressable>
         )}
+        //Controlamos el paginado
+        ListFooterComponent={renderFooter}
+        refreshControl={
+          <RefreshControl refreshing={isMoreLoading} onRefresh={onRefresh} />
+        }
+        onEndReachedThreshold={0.5}
+        onMomentumScrollBegin={() => {
+          let onEndReachedCalledDuringMomentum = false;
+        }}
+        onEndReached={() => {
+          if (!onEndReachedCalledDuringMomentum) {
+            getMore();
+            onEndReachedCalledDuringMomentum = true;
+          }
+        }}
       />
     </View>
   );
