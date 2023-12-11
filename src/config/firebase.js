@@ -21,6 +21,11 @@ const app = firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
 export const storage = getStorage(app);
 
+export const getPaginatedData = (cantidad) => {
+  const queryRef = db.collection("productos").limit(cantidad);
+  return queryRef.get();
+};
+
 export default {
   firebase,
   db,

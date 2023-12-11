@@ -108,7 +108,8 @@ import {
 import { Styles } from "./Styles";
 import React, { useState, useEffect } from "react";
 import Header from "../Header/Header";
-import firebase from "../../src/config/firebase";
+import firebase, { getPaginatedData } from "../../src/config/firebase";
+import { Firestore } from "firebase/firestore";
 
 const instrumentsList = () => {
   const [instruments, setInstruments] = useState([]);
@@ -116,9 +117,35 @@ const instrumentsList = () => {
   const [isMoreLoading, setIsMoreLoading] = useState(false);
   const navigation = useNavigation();
 
+  const [isNoMoreData, setIsNoMoreData] = useState(false);
+  const [lastDocumentSnapshot, setLastDocumentSnapshot] = useState(null);
+
+  // Función para obtener más datos
+  const fetchMore = async () => {
+    if (!isNoMoreData) {
+      setIsMoreLoading(true);
+
+      // Cambia el límite a 4
+      const nextData = await getPaginatedData(lastDocumentSnapshot, 4);
+
+      if (nextData.docs.length > 0) {
+        setInstruments((instruments) => [
+          ...instruments,
+          ...nextData.docs.map((doc) => doc.data()),
+        ]);
+        setLastDocumentSnapshot(nextData.docs[nextData.docs.length - 1]);
+      } else {
+        setIsNoMoreData(true);
+      }
+
+      setIsMoreLoading(false);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = firebase.db
       .collection("productos")
+      .limit(4)
       .onSnapshot((querySnapshot) => {
         const documents = [];
         querySnapshot.docs.forEach((doc) => {
@@ -149,11 +176,10 @@ const instrumentsList = () => {
     }, 2000);
   };
 
-  const getMore = () => {
+  const getMore = async () => {
     setIsMoreLoading(true);
-    setTimeout(() => {
-      setIsMoreLoading(false);
-    }, 2000);
+    await fetchMore();
+    setIsMoreLoading(false);
   };
 
   return (
@@ -163,6 +189,13 @@ const instrumentsList = () => {
         numColumns={2}
         ListHeaderComponent={Header}
         data={instruments}
+        //Controlamos el paginado
+        ListFooterComponent={renderFooter}
+        refreshControl={
+          <RefreshControl refreshing={isMoreLoading} onRefresh={onRefresh} />
+        }
+        onEndReachedThreshold={0}
+        onEndReached={() => getMore()}
         //creamos cada card
         renderItem={({ item }) => (
           <Pressable style={{ margin: 20 }}>
@@ -185,21 +218,6 @@ const instrumentsList = () => {
             </Pressable>
           </Pressable>
         )}
-        //Controlamos el paginado
-        ListFooterComponent={renderFooter}
-        refreshControl={
-          <RefreshControl refreshing={isMoreLoading} onRefresh={onRefresh} />
-        }
-        onEndReachedThreshold={0.5}
-        onMomentumScrollBegin={() => {
-          let onEndReachedCalledDuringMomentum = false;
-        }}
-        onEndReached={() => {
-          if (!onEndReachedCalledDuringMomentum) {
-            getMore();
-            onEndReachedCalledDuringMomentum = true;
-          }
-        }}
       />
     </View>
   );
