@@ -22,7 +22,7 @@ const instrumentsList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchMore(null, 4);
+    fetchMore(null, 2);
 
     // Fetch more data
     const intervalId = setInterval(() => {
@@ -50,7 +50,6 @@ const instrumentsList = () => {
       ]);
       setLastDocumentSnapshot(nextData.docs[nextData.docs.length - 1]);
     }
-    console.log("PONGO LOADING EN FALSO");
     setIsLoading(false);
   }
 
@@ -66,9 +65,9 @@ const instrumentsList = () => {
 
   // Render footer
   const renderFooter = () => {
-    console.log("RENDER FOOTER", isLoading);
+    console.log(isLoading);
     if (!isLoading) return null;
-
+    console.log("activity indicator");
     return (
       <ActivityIndicator
         size="large"
@@ -79,16 +78,13 @@ const instrumentsList = () => {
   };
 
   const llegaFin = () => {
-    console.log("llegó hasta A");
     if (!hasMoreData || isLoading) return;
     fetchMore(lastDocumentSnapshot, 2);
-    console.log("llegó hasta B");
   };
 
   const refresca = () => {
     setIsLoading(true);
     fetchMore(null, 2);
-    console.log("REFRESCA");
   };
 
   return (
@@ -99,12 +95,12 @@ const instrumentsList = () => {
         ListHeaderComponent={Header}
         data={instruments}
         //Controlamos el paginado
-
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refresca} />
         }
-        onEndReachedThreshold={0.1}
-        onEndReached={() => llegaFin}
+        onEndReachedThreshold={0}
+        renderFooter={renderFooter()}
+        onEndReached={() => llegaFin()}
         //creamos cada card
         renderItem={({ item }) => (
           <Pressable style={{ margin: 20 }}>
