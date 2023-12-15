@@ -8,12 +8,20 @@ export const Styles = StyleSheet.create({
     aspectRatio: 0.65,
     height: 240,
     borderRadius: 10,
+    shadowColor: "purple",
   },
   Marca: {
     fontSize: 14,
     fontWeight: "700",
     width: 100,
-    marginTop: 10,
+    marginTop: 5,
+  },
+  Modelo: {
+    fontSize: 14,
+    fontWeight: "300",
+    width: 100,
+    marginTop: 5,
+    marginBottom: 15,
   },
   Pressable: {
     backgroundColor: "#ffc40c",

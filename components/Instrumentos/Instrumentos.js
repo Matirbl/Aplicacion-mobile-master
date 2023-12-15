@@ -102,14 +102,13 @@ const instrumentsList = () => {
         }
         onEndReachedThreshold={0}
         onEndReached={() => llegaFin()}
-        //renderFooter={RenderFooter()}
         ListFooterComponent={RenderFooter()}
         //creamos cada card
         renderItem={({ item }) => (
           <Pressable style={{ margin: 20 }}>
             <Image style={Styles.Image} source={{ uri: item.imagen }} />
             <Text style={Styles.Marca}>{item.marca}</Text>
-            <Text>{item.modelo}</Text>
+            <Text style={Styles.Modelo}>{item.modelo}</Text>
             <Pressable
               onPress={() =>
                 navigation.navigate("UnInstrumento", {

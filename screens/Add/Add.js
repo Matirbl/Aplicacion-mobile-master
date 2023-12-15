@@ -9,6 +9,7 @@ import {
   Alert,
   FlatList,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -18,6 +19,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import GoBackButton from "../../components/GoBackButton/GoBackButton";
+import { Styles } from "./Styles";
 
 let resImagen;
 
@@ -27,7 +29,7 @@ export default function CreateProduct() {
   const navigation = useNavigation();
 
   const initialState = {
-    boton: "",
+    enlace: "",
     descripcion: "",
     imagen: "",
     marca: "",
@@ -35,8 +37,6 @@ export default function CreateProduct() {
   };
 
   const [state, setState] = useState(initialState);
-  // const [files, setFiles] = useState([]);
-
   const handleChangeText = (value, name) => {
     setState({ ...state, [name]: value });
   };
@@ -53,13 +53,13 @@ export default function CreateProduct() {
     try {
       if (!resImagen.canceled) {
         let uri = resImagen.assets[0].uri;
-
         // upload the image
-
         const response = await fetch(uri);
-        const blob = await response.blob(); //se pasa a blob(binario)
+        //se pasa a blob(binario)
+        const blob = await response.blob();
         const storageRef = ref(storage, "Datos/" + new Date().getTime());
-        const uploadTask = uploadBytesResumable(storageRef, blob); //guardar los datos de la imagen en firestore
+        //guardar los datos de la imagen en firestore
+        const uploadTask = uploadBytesResumable(storageRef, blob);
 
         uploadTask.on(
           "state_changed",
@@ -72,9 +72,8 @@ export default function CreateProduct() {
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
-                //console.log("File available at", downloadURL);
-
                 await addDoc(collection(db, "productos"), {
+                  //...state es una copia de la variable de estado del componente y podemos definir que atributo modificar
                   ...state,
                   imagen: downloadURL,
                 });
@@ -85,39 +84,37 @@ export default function CreateProduct() {
           }
         );
       }
-
-      //...state es una copia de la variable de estado del componente
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={Styles.container}>
       <GoBackButton />
-      <Text style={styles.titulo}></Text>
-      <View style={styles.inputgroup}>
+      <Text style={Styles.titulo}></Text>
+      <View style={Styles.inputgroup}>
         <TextInput
-          placeholder="Boton"
-          onChangeText={(value) => handleChangeText(value, "boton")}
-          value={state.boton}
+          placeholder="Enlace"
+          onChangeText={(value) => handleChangeText(value, "enlace")}
+          value={state.enlace}
         />
       </View>
-      <View style={styles.inputgroup}>
+      <View style={Styles.inputgroup}>
         <TextInput
           placeholder="Descripcion"
           onChangeText={(value) => handleChangeText(value, "descripcion")}
           value={state.descripcion}
         />
       </View>
-      <View style={styles.inputgroup}>
+      <View style={Styles.inputgroup}>
         <TextInput
           placeholder="Marca"
           onChangeText={(value) => handleChangeText(value, "marca")}
           value={state.marca}
         />
       </View>
-      <View style={styles.inputgroup}>
+      <View style={Styles.inputgroup}>
         <TextInput
           placeholder="Modelo"
           onChangeText={(value) => handleChangeText(value, "modelo")}
@@ -144,51 +141,16 @@ export default function CreateProduct() {
           contentContainerStyle={{ gap: 2 }}
           columnWrapperStyle={{ gap: 2 }}
         />
-        <TouchableOpacity
-          onPress={pickImage}
-          style={{
-            width: 60,
-            height: 60,
-            left: 130,
-            backgroundColor: "black",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 25,
-          }}
-        >
+        <TouchableOpacity onPress={pickImage} style={Styles.selector}>
           <Ionicons name="image" size={34} color="white" />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.Button}>
-        <Button title="Guardar producto" onPress={saveProduct} />
+      <View style={Styles.containerButton}>
+        <Pressable style={Styles.button} onPress={saveProduct}>
+          <Text style={Styles.TextButton}> Cargar </Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titulo: {
-    textAlign: "center",
-    fontSize: 18,
-    marginTop: 12,
-    marginBottom: 20,
-  },
-  container: {
-    flex: 1,
-    padding: 35,
-  },
-  inputgroup: {
-    flex: 1,
-    paddin: 0,
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
-  },
-  Button: {
-    textAlign: "center",
-    fontSize: 18,
-    marginTop: 50,
-    marginBottom: 20,
-  },
-});

@@ -5,13 +5,13 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { Styles } from "./styles";
+import { Styles } from "./Styles";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const Header = () => {
   const navigation = useNavigation();
-  
+
   return (
     <View>
       <ImageBackground
@@ -58,13 +58,10 @@ const Header = () => {
       </ImageBackground>
 
       <View style={{ marginTop: 30 }} />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {/* {types.map((item, index) => (
-          <View style={Styles.Section} key={index}>
-            <Text style={Styles.TextSection}>{item.name}</Text>
-          </View>
-        ))} */}
-      </ScrollView>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+      ></ScrollView>
     </View>
   );
 };
