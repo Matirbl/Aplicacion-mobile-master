@@ -17,6 +17,7 @@ import { db, storage } from "../../src/config/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import GoBackButton from "../../components/GoBackButton/GoBackButton";
 
 let resImagen;
 
@@ -93,6 +94,7 @@ export default function CreateProduct() {
 
   return (
     <ScrollView style={styles.container}>
+      <GoBackButton />
       <Text style={styles.titulo}></Text>
       <View style={styles.inputgroup}>
         <TextInput

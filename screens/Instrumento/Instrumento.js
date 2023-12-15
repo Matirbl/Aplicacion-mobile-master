@@ -11,35 +11,22 @@ import React from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import GoBackButton from "../../components/GoBackButton/GoBackButton";
 
 const InstrumentoScreen = () => {
   const route = useRoute();
-  console.log(route.params);
-  const navigation = useNavigation();
+
   return (
     <SafeAreaView>
       <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginTop: 35,
-      }}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 35,
+        }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons
-            onPress={() => navigation.goBack()}
-            style={Styles.LeftIcon}
-            name="arrow-back"
-            size={34}
-            color="black"
-          />
-        </View>
+        <GoBackButton />
         <View
           style={{
             flexDirection: "row",
@@ -48,6 +35,7 @@ const InstrumentoScreen = () => {
           }}
         >
           <Ionicons name="search" size={24} color="black" />
+
           <Ionicons
             style={Styles.RigthIcon}
             name="ios-filter-outline"
@@ -90,5 +78,3 @@ const InstrumentoScreen = () => {
 };
 
 export default InstrumentoScreen;
-
-const styles = StyleSheet.create({});

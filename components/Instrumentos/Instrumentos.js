@@ -50,7 +50,9 @@ const instrumentsList = () => {
       ]);
       setLastDocumentSnapshot(nextData.docs[nextData.docs.length - 1]);
     }
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
   }
 
   async function getPaginatedData(lastDocumentSnapshot, limit) {
@@ -64,14 +66,14 @@ const instrumentsList = () => {
   }
 
   // Render footer
-  const renderFooter = () => {
+  const RenderFooter = () => {
     console.log(isLoading);
     if (!isLoading) return null;
     console.log("activity indicator");
     return (
       <ActivityIndicator
         size="large"
-        color="green"
+        color="orange"
         style={Styles.ActivityIndicator}
       />
     );
@@ -99,8 +101,9 @@ const instrumentsList = () => {
           <RefreshControl refreshing={isLoading} onRefresh={refresca} />
         }
         onEndReachedThreshold={0}
-        renderFooter={renderFooter()}
         onEndReached={() => llegaFin()}
+        //renderFooter={RenderFooter()}
+        ListFooterComponent={RenderFooter()}
         //creamos cada card
         renderItem={({ item }) => (
           <Pressable style={{ margin: 20 }}>
