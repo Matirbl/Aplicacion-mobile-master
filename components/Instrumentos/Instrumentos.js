@@ -67,7 +67,6 @@ const instrumentsList = () => {
 
   // Render footer
   const RenderFooter = () => {
-    console.log(isLoading);
     if (!isLoading) return null;
     console.log("activity indicator");
     return (
