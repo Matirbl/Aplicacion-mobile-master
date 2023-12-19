@@ -1,11 +1,9 @@
 import { useState } from "react";
 import {
-  StyleSheet,
   Text,
   View,
   ScrollView,
   TextInput,
-  Button,
   Alert,
   FlatList,
   TouchableOpacity,
