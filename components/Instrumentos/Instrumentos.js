@@ -23,18 +23,14 @@ const instrumentsList = () => {
   useEffect(() => {
     setIsLoading(true);
     fetchMore(null, 2);
-
-    // Fetch more data
     const intervalId = setInterval(() => {
       if (hasMoreData && !isLoading) {
         fetchMore(lastDocumentSnapshot, 2);
       }
     });
-
     return () => clearInterval(intervalId);
   }, []);
 
-  // Fetch data
   async function fetchMore(lastDocumentSnapshot, limit) {
     if (!hasMoreData) return;
 
@@ -65,11 +61,8 @@ const instrumentsList = () => {
     return nextData;
   }
 
-  // Render footer
   const RenderFooter = () => {
-    console.log(isLoading);
     if (!isLoading) return null;
-    console.log("activity indicator");
     return (
       <ActivityIndicator
         size="large"
@@ -96,14 +89,12 @@ const instrumentsList = () => {
         numColumns={2}
         ListHeaderComponent={Header}
         data={instruments}
-        //Controlamos el paginado
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refresca} />
         }
         onEndReachedThreshold={0}
         onEndReached={() => llegaFin()}
         ListFooterComponent={RenderFooter()}
-        //creamos cada card
         renderItem={({ item }) => (
           <Pressable style={{ margin: 20 }}>
             <Image style={Styles.Image} source={{ uri: item.imagen }} />

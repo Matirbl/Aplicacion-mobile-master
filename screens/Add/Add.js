@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-//import firebase
 import { db, storage } from "../../src/config/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
@@ -51,12 +50,9 @@ export default function CreateProduct() {
     try {
       if (!resImagen.canceled) {
         let uri = resImagen.assets[0].uri;
-        // upload the image
         const response = await fetch(uri);
-        //se pasa a blob(binario)
         const blob = await response.blob();
         const storageRef = ref(storage, "Datos/" + new Date().getTime());
-        //guardar los datos de la imagen en firestore
         const uploadTask = uploadBytesResumable(storageRef, blob);
 
         uploadTask.on(
@@ -71,7 +67,6 @@ export default function CreateProduct() {
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
                 await addDoc(collection(db, "productos"), {
-                  //...state es una copia de la variable de estado del componente y podemos definir que atributo modificar
                   ...state,
                   imagen: downloadURL,
                 });

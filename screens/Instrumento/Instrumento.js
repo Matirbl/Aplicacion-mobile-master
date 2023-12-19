@@ -1,14 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  Linking,
-} from "react-native";
+import { Text, View, SafeAreaView, Image, Linking } from "react-native";
 import { Styles } from "./Styles";
 import React from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import GoBackButton from "../../components/GoBackButton/GoBackButton";
@@ -71,7 +64,7 @@ const InstrumentoScreen = () => {
         style={{ flexDirection: "row", alignContent: "center", padding: 10 }}
       >
         <AntDesign name="Safety" size={24} color="orange" />
-        <Text>Your safety is our priority</Text>
+        <Text>Nuestra prioridad es su seguridad</Text>
       </View>
     </SafeAreaView>
   );
